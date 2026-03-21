@@ -1,0 +1,1 @@
+/home/ashwins/.config/fish/config.fish
