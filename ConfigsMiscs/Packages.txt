@@ -14,6 +14,7 @@ chromium
 clinfo
 clpeak
 cmake
+curl
 discover
 dolphin
 dsniff
@@ -41,7 +42,6 @@ libxcrypt-compat
 linux
 linux-firmware
 linux-headers
-localsend
 lsof
 ly
 make

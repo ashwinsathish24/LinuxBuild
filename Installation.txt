@@ -1,2 +1,15 @@
+=== Building yay ===
+sudo pacman -S --needed git base-devel
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
 
+=== Fetching Caelestia Shell ==
+1. git clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia
+2. Install the fish script in the installed location
+
+=== Installing Packages ===
 sudo pacman -S --needed - < installation.txt
+
+=== Optimizations ===
+1. Fan control - sudo nbfc config -a (json name)
