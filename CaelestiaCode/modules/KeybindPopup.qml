@@ -42,6 +42,10 @@ PanelWindow {
                     "-c", 
                     "FILE=\"$HOME/.config/hypr/shortcut.json\"; touch \"$FILE\"; JSON=$(cat \"$FILE\"); if [ -z \"$JSON\" ]; then JSON=\"{}\"; fi; hyprctl -j binds | jq --argjson ex \"$JSON\" 'reduce .[] as $b ($ex; ((if ($b.modmask / 64 | floor) % 2 == 1 then \"SUPER+\" else \"\" end) + (if ($b.modmask / 4 | floor) % 2 == 1 then \"CTRL+\" else \"\" end) + (if ($b.modmask / 8 | floor) % 2 == 1 then \"ALT+\" else \"\" end) + (if ($b.modmask / 1 | floor) % 2 == 1 then \"SHIFT+\" else \"\" end) + $b.key) as $k | if .[$k] == null then .[$k] = \"\" else . end)' > \"$FILE.tmp\" && mv \"$FILE.tmp\" \"$FILE\""
                 ]);
+                
+                // Clear old search and auto-focus the box when opened
+                searchInput.text = "";
+                searchInput.forceActiveFocus();
             }
             keybindWindow.visible = !keybindWindow.visible;
         }
@@ -68,16 +72,14 @@ PanelWindow {
     StyledClippingRect {
         anchors.fill: parent
         color: Colours.tPalette.m3surfaceContainer
-        
         radius: Config.border.rounding
-        // Border properties completely removed
 
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: Appearance.padding.large
             spacing: Appearance.spacing.large
 
-            // Window Title Header
+            // Window Title Header + Search Box
             RowLayout {
                 Layout.fillWidth: true
                 spacing: Appearance.spacing.normal
@@ -88,11 +90,22 @@ PanelWindow {
                 }
 
                 StyledText {
-                    Layout.fillWidth: true
                     text: qsTr("System Keybinds")
                     font.pointSize: Appearance.font.size.larger
                     font.weight: 500
                     color: Colours.palette.m3primary
+                }
+
+                // Pushes the search box to the right edge
+                Item { Layout.fillWidth: true } 
+
+                StyledTextField {
+                    id: searchInput
+                    Layout.preferredWidth: 250
+                    placeholderText: qsTr("Search... (Use ; to deep search")
+                    // Keep normal padding inside the text box
+                    leftPadding: Appearance.padding.normal
+                    rightPadding: Appearance.padding.normal
                 }
             }
 
@@ -132,16 +145,27 @@ PanelWindow {
                 ColumnLayout {
                     id: listLayout
                     width: scroll.width 
-                    // Increased spacing between rows
                     spacing: Appearance.spacing.normal
 
                     Repeater {
-                        model: keybindWindow.shortcutsArray
+                        // Dynamically filter the array based on the search input
+                        model: {
+                            let query = searchInput.text.toLowerCase().trim();
+                            if (query === "") return keybindWindow.shortcutsArray;
+
+                            // Split by ";" and filter out empty terms
+                            let terms = query.split(";").map(t => t.trim()).filter(t => t.length > 0);
+
+                            return keybindWindow.shortcutsArray.filter(item => {
+                                let combinedText = (item.bindStr + " " + item.descStr).toLowerCase();
+                                // Check if ALL terms are present in the combined string
+                                return terms.every(term => combinedText.includes(term));
+                            });
+                        }
                         
                         delegate: Item {
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignTop
-                            // Adjusted to account for the larger margins
                             Layout.preferredHeight: row.implicitHeight + (Appearance.padding.normal * 2)
 
                             RowLayout {
@@ -149,7 +173,6 @@ PanelWindow {
                                 anchors.fill: parent
                                 anchors.leftMargin: Appearance.padding.normal
                                 anchors.rightMargin: Appearance.padding.normal
-                                // Increased top and bottom padding for the text
                                 anchors.topMargin: Appearance.padding.normal
                                 anchors.bottomMargin: Appearance.padding.normal
                                 spacing: Appearance.spacing.large

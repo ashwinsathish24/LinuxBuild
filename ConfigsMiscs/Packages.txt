@@ -36,7 +36,6 @@ interception-caps2esc
 interception-tools
 iwd
 keyd
-lact
 libreoffice-fresh
 libxcrypt-compat
 linux
