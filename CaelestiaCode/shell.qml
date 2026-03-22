@@ -22,4 +22,5 @@ ShellRoot {
     IdleMonitors {
         lock: lock
     }
+    KeybindPopup {}
 }

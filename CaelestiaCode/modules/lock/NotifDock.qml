@@ -60,7 +60,7 @@ ColumnLayout {
 
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
-                    text: qsTr("No Notifications")
+                    text: qsTr("Visit Hub for more news")
                     color: Colours.palette.m3outlineVariant
                     font.pointSize: Appearance.font.size.medium
                     font.family: Appearance.font.family.mono
