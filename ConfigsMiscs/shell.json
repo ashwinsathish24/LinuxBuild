@@ -34,7 +34,7 @@
     }
   },
   "general": {
-    "logo": "/home/ashwins/Videos/Caelestia/HarmonyLogo.png",
+    "logo": "/etc/xdg/quickshell/caelestia/assets/logo.png",
     "apps": {
       "terminal": [
         "foot"
@@ -597,7 +597,7 @@
   },
   "paths": {
     "wallpaperDir": "~/Pictures/Wallpapers",
-    "sessionGif": "/home/ashwins/Videos/Caelestia/HarmonyLogo.png",
-    "mediaGif": "/home/ashwins/Videos/Caelestia/HarmonyLogo.png"
+    "sessionGif": "/etc/xdg/quickshell/caelestia/assets/logo.png",
+    "mediaGif": "/etc/xdg/quickshell/caelestia/assets/logo.png"
   }
 }
