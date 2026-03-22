@@ -2,6 +2,7 @@ pragma Singleton
 
 import qs.config
 import qs.utils
+import qs.services
 import Caelestia.Models
 import Quickshell
 import Quickshell.Io
@@ -10,6 +11,7 @@ import QtQuick
 Searcher {
     id: root
 
+    property bool openUiRequested: false
     readonly property string currentNamePath: `${Paths.state}/wallpaper/path.txt`
     readonly property list<string> smartArg: Config.services.smartScheme ? [] : ["--no-smart"]
 
@@ -47,6 +49,11 @@ Searcher {
 
     IpcHandler {
         target: "wallpaper"
+	
+	function openUi(): void {
+            root.openUiRequested = true;
+            Visibilities.getForActive().launcher = true;
+        }
 
         function get(): string {
             return root.actualCurrent;

@@ -58,8 +58,8 @@
   "SUPER+SHIFT+0": "Move Selected Window to Workspace 10",
   "SUPER+ALT+Page_Up": "Move Selected Window -1 Workspace",
   "SUPER+ALT+Page_Down": "Move Selected Window +1 Workspace",
-  "SUPER+ALT+mouse_up": "Move Selected Window -1 Workspace",
-  "SUPER+ALT+mouse_down": "Move Selected Window +1 Workspace",
+  "SUPER+ALT+mouse_down": "Move Selected Window -1 Workspace",
+  "SUPER+ALT+mouse_up": "Move Selected Window +1 Workspace",
   "SUPER+CTRL+SHIFT+right": "Move Selected Window -1 Workspace",
   "SUPER+CTRL+SHIFT+left": "Move Selected Window +1 Workspace",
   "SUPER+S": "Toggle Special Workspace",
@@ -88,7 +88,7 @@
   "Print": "FullScreen ScreenShot",
   "SUPER+SHIFT+S": "ScreenShot",
   "SUPER+C": "Color Picker",
-  "SUPER+ALT+A": "Open this popup",
+  "SUPER+A": "Open KeyBinds Popup",
   "SUPER+V": "Open Clipboard",
   "SUPER+ALT+V": "Delete something from Clipboard",
   "SUPER+Period": "Emoji",
@@ -102,5 +102,6 @@
   "SUPER+SHIFT+G": "Open Gmail",
   "SUPER+SHIFT+A": "Open ChatGPT",
   "SUPER+SHIFT+T": "Open Teams",
-  "SUPER+SHIFT+O": "Open Outlook"
+  "SUPER+SHIFT+O": "Open Outlook",
+  "SUPER+ALT+W": "Open Wallpapers"
 }

@@ -18,8 +18,13 @@ Item {
     readonly property int padding: Appearance.padding.large
     readonly property int rounding: Appearance.rounding.large
 
+    // Flag to track how the launcher was opened
+    property bool isKeybindMode: false
+
     implicitWidth: listWrapper.width + padding * 2
-    implicitHeight: searchWrapper.height + listWrapper.height + padding * 2
+    
+    // Safely shrink the window height when the search container is hidden
+    implicitHeight: (isKeybindMode ? 0 : searchContainer.height + Appearance.spacing.small) + listWrapper.height + padding * 2
 
     Item {
         id: listWrapper
@@ -28,8 +33,28 @@ Item {
         implicitHeight: list.height + root.padding
 
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: searchWrapper.top
+        
+        // Conditionally anchor directly to the bottom so the invisible box doesn't push it up
+        anchors.bottom: root.isKeybindMode ? parent.bottom : searchContainer.top
         anchors.bottomMargin: root.padding
+
+        // Handle keys here so they work even when the search bar is hidden
+        Keys.onUpPressed: list.currentList?.decrementCurrentIndex()
+        Keys.onDownPressed: list.currentList?.incrementCurrentIndex()
+        Keys.onLeftPressed: list.currentList?.decrementCurrentIndex()
+        Keys.onRightPressed: list.currentList?.incrementCurrentIndex()
+
+        Keys.onPressed: event => {
+            if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                const currentItem = list.currentList?.currentItem;
+                if (currentItem && list.showWallpapers) {
+                    if (Colours.scheme === "dynamic" && currentItem.modelData.path !== Wallpapers.actualCurrent)
+                        Wallpapers.previewColourLock = true;
+                    Wallpapers.setWallpaper(currentItem.modelData.path);
+                    root.visibilities.launcher = false;
+                }
+            }
+        }
 
         ContentList {
             id: list
@@ -37,7 +62,10 @@ Item {
             content: root
             visibilities: root.visibilities
             panels: root.panels
-            maxHeight: root.maxHeight - searchWrapper.implicitHeight - root.padding * 3
+            
+            // Reclaim the missing space so the thumbnails fit perfectly
+            maxHeight: root.maxHeight - (root.isKeybindMode ? 0 : searchContainer.implicitHeight + root.padding) - root.padding * 2
+            
             search: search
             padding: root.padding
             rounding: root.rounding
@@ -45,7 +73,10 @@ Item {
     }
 
     StyledRect {
-        id: searchWrapper
+        id: searchContainer
+
+        // Conditionally hide the container
+        visible: !root.isKeybindMode 
 
         color: Colours.layer(Colours.palette.m3surfaceContainer, 2)
         radius: Appearance.rounding.full
@@ -81,6 +112,9 @@ Item {
 
             placeholderText: qsTr("Type \"%1\" for commands").arg(Config.launcher.actionPrefix)
 
+            // Spawn instantly in the correct state
+            text: Wallpapers.openUiRequested ? `${Config.launcher.actionPrefix}wallpaper ` : ""
+
             onAccepted: {
                 const currentItem = list.currentList?.currentItem;
                 if (currentItem) {
@@ -103,13 +137,10 @@ Item {
 
             Keys.onUpPressed: list.currentList?.decrementCurrentIndex()
             Keys.onDownPressed: list.currentList?.incrementCurrentIndex()
-
             Keys.onEscapePressed: root.visibilities.launcher = false
 
             Keys.onPressed: event => {
-                if (!Config.launcher.vimKeybinds)
-                    return;
-
+                if (!Config.launcher.vimKeybinds) return;
                 if (event.modifiers & Qt.ControlModifier) {
                     if (event.key === Qt.Key_J) {
                         list.currentList?.incrementCurrentIndex();
@@ -127,18 +158,42 @@ Item {
                 }
             }
 
-            Component.onCompleted: forceActiveFocus()
+            Component.onCompleted: {
+                if (Wallpapers.openUiRequested) {
+                    root.isKeybindMode = true; 
+                    search.text = `${Config.launcher.actionPrefix}wallpaper `;
+                    search.cursorPosition = search.text.length;
+                    Wallpapers.openUiRequested = false;
+                    listWrapper.forceActiveFocus(); // Shift focus to the list area
+                } else {
+                    forceActiveFocus();
+                }
+            }
+
+            Connections {
+                target: Wallpapers
+                function onOpenUiRequestedChanged(): void {
+                    if (Wallpapers.openUiRequested && root.visibilities.launcher) {
+                        root.isKeybindMode = true;
+                        search.text = `${Config.launcher.actionPrefix}wallpaper `;
+                        search.cursorPosition = search.text.length;
+                        Wallpapers.openUiRequested = false;
+                        listWrapper.forceActiveFocus();
+                    }
+                }
+            }
 
             Connections {
                 target: root.visibilities
-
                 function onLauncherChanged(): void {
-                    if (!root.visibilities.launcher)
+                    if (!root.visibilities.launcher) {
                         search.text = "";
+                        root.isKeybindMode = false;
+                    }
                 }
 
                 function onSessionChanged(): void {
-                    if (!root.visibilities.session)
+                    if (!root.visibilities.session && !root.isKeybindMode)
                         search.forceActiveFocus();
                 }
             }
