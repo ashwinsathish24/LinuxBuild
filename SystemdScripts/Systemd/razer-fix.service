@@ -1,0 +1,9 @@
+[Unit]
+Description=Razer mouse middle-click fix
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/razer-fix.sh
+
+[Install]
+WantedBy=multi-user.target

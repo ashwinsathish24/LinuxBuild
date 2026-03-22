@@ -8,8 +8,21 @@ makepkg -si
 1. git clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia
 2. Install the fish script in the installed location
 
+=== Fetching Ashwin's Harmony Theme for Caelestia ===
+git clone https://github.com/ashwinsathish24/LinuxBuild.git ~/Documents/LinuxBuild/
+cd ~/Documents/LinuxBuild/
+
+Copy everything from here to the - /etc/xdg/quickshell/caelestia/
+
 === Installing Packages ===
 sudo pacman -S --needed - < installation.txt
 
 === Optimizations ===
 1. Fan control - sudo nbfc config -a (json name)
+2. If middle mouse buttons dont work, Use these commands in order
+
+cp SystemdScripts/Bin/razer-fix.sh /usr/local/bin/razer-fix.sh
+sudo chmod +x /usr/local/bin/razer-fix.sh
+cp SystemdScripts/Systemd/razer-fix.service /etc/systemd/system/razer-fix.service
+sudo systemctl start razer-fix.service
+sudo systemctl daemon-reload
