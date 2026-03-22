@@ -15,7 +15,7 @@ cd ~/Documents/LinuxBuild/
 Copy everything from here to the - /etc/xdg/quickshell/caelestia/
 
 === Installing Packages ===
-cat Packages.txt | xargs sudo pacman -S --needed
+xargs -a Packages.txt sudo pacman -S --needed --noconfirm
 
 === Optimizations ===
 1. Fan control - sudo nbfc config -a (json name)
