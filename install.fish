@@ -21,7 +21,29 @@ cd ~/
 
 # Copy LinuxBuild
 sudo mkdir -p /etc/xdg/quickshell/caelestia/
-sudo cp -r ~/Documents/LinuxBuild/* /etc/xdg/quickshell/caelestia/
+sudo cp -r ~/Documents/LinuxBuild/CaelestiaCode/* /etc/xdg/quickshell/caelestia/
+cd ~/
+
+# Copy wallpapers
+mkdir -p ~/Pictures/
+cp -r ~/Documents/LinuxBuild/Wallpapers ~/Pictures/
+cd ~/
+
+# Configure fish
+mkdir -p ~/.config/fish
+cp ~/Documents/LinuxBuild/ConfigsMiscs/config.fish ~/.config/fish/config.fish
+cd ~/
+
+# Configure foot
+mkdir -p ~/.config/foot
+rm -rf ~/.config/foot/*
+cp ~/Documents/LinuxBuild/ConfigsMiscs/foot-nvim.ini ~/Documents/LinuxBuild/ConfigsMiscs/foot.ini ~/.config/foot/
+cd ~/
+
+# Configure hyprland
+mkdir -p ~/.config/hypr
+rm -rf ~/.config/hypr/*
+cp -r ~/Documents/LinuxBuild/HyprlandConfig/* ~/.config/hypr/
 cd ~/
 
 # Install custom packages
@@ -39,4 +61,10 @@ cd ~/
 
 # Check network
 systemctl list-units --type=service | grep -E 'NetworkManager|netctl|dhcpcd|iwd|systemd-networkd'
+cd ~/
+
+# Reload shell
+hyprctl reload
+pkill caelestia
+caelestia shell -d
 cd ~/
