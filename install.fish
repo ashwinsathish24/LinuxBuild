@@ -46,6 +46,11 @@ rm -rf ~/.config/hypr/*
 cp -r ~/Documents/LinuxBuild/HyprlandConfig/* ~/.config/hypr/
 cd ~/
 
+# Configure shell
+mkdir -p ~/.config/caelestia
+cp ~/Documents/LinuxBuild/ConfigsMiscs/shell.json ~/.config/caelestia/shell.json
+cd ~/
+
 # Install custom packages
 cd ~/Documents/LinuxBuild/ConfigsMiscs
 xargs -a Packages.txt sudo pacman -S --needed --noconfirm
@@ -63,8 +68,6 @@ cd ~/
 systemctl list-units --type=service | grep -E 'NetworkManager|netctl|dhcpcd|iwd|systemd-networkd'
 cd ~/
 
-# Reload shell
-hyprctl reload
-pkill caelestia
-caelestia shell -d
+# Enable ly service
+sudo systemctl enable --now ly@tty1
 cd ~/
