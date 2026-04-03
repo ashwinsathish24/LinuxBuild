@@ -68,6 +68,11 @@ cd ~/
 systemctl list-units --type=service | grep -E 'NetworkManager|netctl|dhcpcd|iwd|systemd-networkd'
 cd ~/
 
+# Creating Additional Folders
+mkdir ~/Downloads
+mkdir ~/Videos
+mkdir ~/Music
+
 # Enable ly service
 sudo systemctl enable --now ly@tty1
 cd ~/
