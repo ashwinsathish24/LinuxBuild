@@ -58,7 +58,7 @@ cd ~/
 
 # Configure Foot and Fish
 mkdir -p ~/.config/fish
-cp ~/.config/fish/functions/fish_greeting.fish ~/.config/fish/functions/fish_greeting.fish
+cp ~/Documents/LinuxBuild/ConfigsMiscs/fish_greeting.fish ~/.config/fish/functions/fish_greeting.fish
 cd ~/
 mkdir -p ~/.config/fastfetch
 cp ~/Documents/LinuxBuild/ConfigsMiscs/config.jsonc ~/.config/fastfetch/config.jsonc
