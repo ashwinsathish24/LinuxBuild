@@ -56,6 +56,14 @@ cd ~/Documents/LinuxBuild/ConfigsMiscs
 xargs -a Packages.txt sudo pacman -S --needed --noconfirm
 cd ~/
 
+# Configure Foot and Fish
+mkdir -p ~/.config/fish
+cp ~/.config/fish/functions/fish_greeting.fish ~/.config/fish/functions/fish_greeting.fish
+cd ~/
+mkdir -p ~/.config/fastfetch
+cp ~/Documents/LinuxBuild/ConfigsMiscs/config.jsonc ~/.config/fastfetch/config.jsonc
+cd ~/
+
 # Setup razer-fix
 sudo cp ~/Documents/LinuxBuild/SystemdScripts/Bin/razer-fix.sh /usr/local/bin/razer-fix.sh
 sudo chmod +x /usr/local/bin/razer-fix.sh

@@ -57,12 +57,9 @@ pipewire-pulse
 pipewire-zeroconf
 polkit-gnome
 power-profiles-daemon
-qbittorrent
 sof-firmware
-strace
 stress-ng
 sudo
-wayvnc
 wget
 whois
 xorg-xev
