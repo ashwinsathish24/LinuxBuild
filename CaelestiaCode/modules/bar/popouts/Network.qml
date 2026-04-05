@@ -340,7 +340,7 @@ ColumnLayout {
             if (Nmcli.active && root.connectingToSsid === Nmcli.active.ssid) {
                 root.connectingToSsid = "";
                 // Close password dialog if we successfully connected
-                if (root.showPasswordDialog && root.passwordNetwork && Nmcli.active.ssid === root.passwordNetwork.ssid) {
+                if (root.showPasswordDialog) {
                     root.showPasswordDialog = false;
                     root.passwordNetwork = null;
                     if (root.wrapper.currentName === "wirelesspassword") {

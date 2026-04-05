@@ -454,9 +454,15 @@ ColumnLayout {
 
                         // Connect to network
                         NetworkConnection.connectWithPassword(root.network, password, result => {
-                            if (result && result.success)
-                            // Connection successful, monitor will handle the rest
-                            {} else if (result && result.needsPassword) {
+                            if (result && result.success) {
+                                connectionMonitor.stop();
+                                connectButton.connecting = false;
+                                connectButton.text = qsTr("Connect");
+                                if (root.wrapper.currentName === "wirelesspassword") {
+                                    root.wrapper.currentName = "network";
+                                }
+                                closeDialog();
+                            } else if (result && result.needsPassword) {
                                 // Shouldn't happen since we provided password
                                 connectionMonitor.stop();
                                 connecting = false;

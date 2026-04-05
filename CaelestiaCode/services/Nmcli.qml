@@ -20,6 +20,7 @@ Singleton {
     readonly property AccessPoint active: networks.find(n => n.active) ?? null
     property list<string> savedConnections: []
     property list<string> savedConnectionSsids: []
+    property var connectionMap: ({})
 
     property var wifiConnectionQueue: []
     property int currentSsidQueryIndex: 0
@@ -357,7 +358,6 @@ Singleton {
         const hasBssid = bssid !== undefined && bssid !== null && bssid.length > 0;
         const retries = retryCount !== undefined ? retryCount : 0;
         const maxRetries = 2;
-
         if (callback) {
             root.pendingConnection = {
                 ssid: ssid,
@@ -370,20 +370,17 @@ Singleton {
             immediateCheckTimer.start();
         }
 
-        if (password && password.length > 0 && hasBssid) {
-            const bssidUpper = bssid.toUpperCase();
-            createConnectionWithPassword(ssid, bssidUpper, password, callback);
-            return;
-        }
-
         let cmd = [root.nmcliCommandDevice, root.nmcliCommandWifi, "connect", ssid];
         if (password && password.length > 0) {
             cmd.push(root.connectionParamPassword, password);
         }
+        if (hasBssid) {
+            cmd.push("bssid", bssid.toUpperCase());
+        }
+
         executeCommand(cmd, result => {
             if (result.needsPassword && callback) {
-                if (callback)
-                    callback(result);
+                callback(result);
                 return;
             }
 
@@ -392,7 +389,7 @@ Singleton {
                 Qt.callLater(() => {
                     connectWireless(ssid, password, bssid, callback, retries + 1);
                 }, 1000);
-            } else if (!result.success && root.pendingConnection) {} else if (result.success && callback) {} else if (!result.success && !root.pendingConnection) {
+            } else if (!result.success && !root.pendingConnection) {
                 if (callback)
                     callback(result);
             }
@@ -467,6 +464,7 @@ Singleton {
         const lines = output.trim().split("\n").filter(line => line.length > 0);
         const wifiConnections = [];
         const connections = [];
+        root.connectionMap = {};
 
         for (const line of lines) {
             const parts = line.split(":");
@@ -503,7 +501,7 @@ Singleton {
 
             executeCommand(["-t", "-f", root.wirelessSsidField, root.nmcliCommandConnection, "show", connectionName], result => {
                 if (result.success) {
-                    processSsidOutput(result.output);
+                    processSsidOutput(result.output, connectionName);
                 }
                 queryNextSsid(callback);
             });
@@ -515,13 +513,18 @@ Singleton {
         }
     }
 
-    function processSsidOutput(output: string): void {
+    function processSsidOutput(output: string, connectionName: string): void {
         const lines = output.trim().split("\n");
         for (const line of lines) {
             if (line.startsWith("802-11-wireless.ssid:")) {
                 const ssid = line.substring("802-11-wireless.ssid:".length).trim();
                 if (ssid && ssid.length > 0) {
                     const ssidLower = ssid.toLowerCase();
+                    
+                    let map = root.connectionMap;
+                    map[ssidLower] = connectionName;
+                    root.connectionMap = map;
+
                     const exists = root.savedConnectionSsids.some(s => s && s.toLowerCase() === ssidLower);
                     if (!exists) {
                         const newList = root.savedConnectionSsids.slice();
@@ -569,7 +572,10 @@ Singleton {
             return;
         }
 
-        const connectionName = root.savedConnections.find(conn => conn && conn.toLowerCase().trim() === ssid.toLowerCase().trim()) || ssid;
+        const ssidLower = ssid.toLowerCase().trim();
+        const connectionName = (root.connectionMap && root.connectionMap[ssidLower]) ? 
+            root.connectionMap[ssidLower] : 
+            (root.savedConnections.find(conn => conn && conn.toLowerCase().trim() === ssidLower) || ssid);
 
         executeCommand([root.nmcliCommandConnection, "delete", connectionName], result => {
             if (result.success) {
@@ -577,7 +583,8 @@ Singleton {
                     loadSavedConnections(() => {});
                 }, 500);
             }
-            if (callback)
+           
+             if (callback)
                 callback(result);
         });
     }

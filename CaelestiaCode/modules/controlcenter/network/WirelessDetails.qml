@@ -138,10 +138,24 @@ DeviceDetails {
 
                         onClicked: {
                             if (root.network && root.network.ssid) {
+                                const targetSsid = root.network.ssid;
                                 if (root.network.active) {
                                     Nmcli.disconnectFromNetwork();
+                                    // Wait for disconnect before deleting the profile
+                                    Qt.callLater(() => {
+                                        Nmcli.forgetNetwork(targetSsid, () => {
+                                            Qt.callLater(() => {
+                                                Nmcli.getNetworks(() => {});
+                                            }, 500);
+                                        });
+                                    }, 500);
+                                } else {
+                                    Nmcli.forgetNetwork(targetSsid, () => {
+                                        Qt.callLater(() => {
+                                            Nmcli.getNetworks(() => {});
+                                        }, 500);
+                                    });
                                 }
-                                Nmcli.forgetNetwork(root.network.ssid);
                             }
                         }
                     }
