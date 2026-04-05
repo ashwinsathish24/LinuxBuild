@@ -1285,8 +1285,36 @@ Singleton {
     Timer {
         id: monitorRestartTimer
         interval: 2000
+    
         onTriggered: {
             monitorProc.running = true;
+        }
+    }
+
+    Process {
+        id: iwdCheckProc
+        command: ["bash", "-c", "grep -q -E '^[[:space:]]*wifi\\.backend[[:space:]]*=[[:space:]]*iwd' /etc/NetworkManager/NetworkManager.conf"]
+        onExited: code => {
+            if (code !== 0) {
+                console.warn("[NMCLI] iwd backend not configured in NetworkManager.conf, applying fix...");
+                iwdFixProc.running = true;
+            }
+        }
+    }
+
+    Process {
+        id: iwdFixProc
+        command: ["pkexec", "bash", "-c", "if ! grep -qF '[device]' /etc/NetworkManager/NetworkManager.conf; then echo -e '\\n[device]\\nwifi.backend=iwd' >> /etc/NetworkManager/NetworkManager.conf; else sed -i '/^[[:space:]]*wifi\\.backend[[:space:]]*=/d' /etc/NetworkManager/NetworkManager.conf; sed -i '/^\\[device\\]/a wifi.backend=iwd' /etc/NetworkManager/NetworkManager.conf; fi; systemctl restart NetworkManager"]
+        onExited: code => {
+            if (code === 0) {
+                console.log("[NMCLI] iwd backend configured successfully.");
+                Qt.callLater(() => {
+                    root.getWifiStatus(() => {});
+                    root.getNetworks(() => {});
+                }, 2000);
+            } else {
+                console.warn("[NMCLI] Failed to configure iwd backend. Exit code: " + code);
+            }
         }
     }
 
@@ -1331,6 +1359,7 @@ Singleton {
     }
 
     Component.onCompleted: {
+        iwdCheckProc.running = true;
         getWifiStatus(() => {});
         getNetworks(() => {});
         loadSavedConnections(() => {});
