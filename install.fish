@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 # Install packages
-sudo pacman -S wget curl gcc make cmake nano nvim fish
+sudo pacman -S wget curl gcc make cmake nano nvim vim fish
 cd ~/
 
 # Clone caelestia
