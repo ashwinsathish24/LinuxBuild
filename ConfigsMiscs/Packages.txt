@@ -66,3 +66,9 @@ xorg-xev
 yazi
 zoxide
 zram-generator
+qemu-full
+virt-manager
+virt-viewer
+dnsmasq
+vde2
+iproute2
