@@ -24,6 +24,7 @@ git
 glu
 gst-plugin-pipewire
 gwenview
+gparted
 imagemagick
 interception-caps2esc
 interception-tools
@@ -56,6 +57,7 @@ pipewire-jack
 pipewire-pulse
 pipewire-zeroconf
 polkit-gnome
+xorg-xhost
 power-profiles-daemon
 sof-firmware
 stress-ng
