@@ -68,7 +68,11 @@ cd ~/
 # Creating Additional Folders
 xdg-user-dirs-update
 
-# ---- QEMU / libvirt setup ----
+# Yazi EDITOR/VISUAL
+set -Ux EDITOR nvim
+set -Ux VISUAL nvim
+
+# QEMU / libvirt setup
 sudo systemctl enable --now libvirtd
 sudo usermod -aG libvirt,kvm $USER
 
