@@ -4,19 +4,13 @@
 sudo pacman -S wget curl gcc make cmake nano nvim vim fish
 cd ~/
 
-# Clone caelestia
-git clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia
+# Install requirements
+sudo mkdir ~/.local/share/caelestia/
+sudo cp -r ~/Documents/LinuxBuild/Installation/* ~/.local/share/caelestia/
 cd ~/
 
 # Run installation
 ~/.local/share/caelestia/install.fish
-cd ~/
-
-# Install yay
-sudo pacman -S --needed git base-devel
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
 cd ~/
 
 # Copy LinuxBuild
