@@ -1,12 +1,11 @@
 #!/usr/bin/env fish
-
 # Install packages
-sudo pacman -S wget curl gcc make cmake nano nvim vim fish
+sudo pacman -S wget curl gcc make cmake nano nvim vim fish xdg-user-dirs
 cd ~/
 
 # Install requirements
-sudo mkdir ~/.local/share/caelestia/
-sudo cp -r ~/Documents/LinuxBuild/Installation/* ~/.local/share/caelestia/
+mkdir -p ~/.local/share/caelestia/
+cp -r ~/Documents/LinuxBuild/Installation/* ~/.local/share/caelestia/
 cd ~/
 
 # Run installation
@@ -66,14 +65,8 @@ sudo systemctl daemon-reload
 sudo systemctl start razer-fix.service
 cd ~/
 
-# Check network
-systemctl list-units --type=service | grep -E 'NetworkManager|netctl|dhcpcd|iwd|systemd-networkd'
-cd ~/
-
 # Creating Additional Folders
-mkdir ~/Downloads
-mkdir ~/Videos
-mkdir ~/Music
+xdg-user-dirs-update
 
 # Enable ly service
 sudo systemctl enable --now ly@tty1
