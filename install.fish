@@ -68,6 +68,10 @@ cd ~/
 # Creating Additional Folders
 xdg-user-dirs-update
 
+# ---- QEMU / libvirt setup ----
+sudo systemctl enable --now libvirtd
+sudo usermod -aG libvirt,kvm $USER
+
 # Enable ly service
 sudo systemctl enable --now ly@tty1
 cd ~/
