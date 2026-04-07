@@ -76,6 +76,9 @@ set -Ux VISUAL nvim
 sudo systemctl enable --now libvirtd
 sudo usermod -aG libvirt,kvm $USER
 
+# Nvim setup
+rm -rf ~/.config/nvim && git clone https://github.com/NvChad/starter ~/.config/nvim
+
 # Enable ly service
 sudo systemctl enable --now ly@tty1
 cd ~/
