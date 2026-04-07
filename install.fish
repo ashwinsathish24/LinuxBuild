@@ -10,7 +10,7 @@ sudo cp -r ~/Documents/LinuxBuild/Installation/* ~/.local/share/caelestia/
 cd ~/
 
 # Run installation
-~/.local/share/caelestia/install.fish
+fish ~/.local/share/caelestia/install.fish
 cd ~/
 
 # Copy LinuxBuild
